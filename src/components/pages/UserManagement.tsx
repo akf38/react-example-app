@@ -1,5 +1,48 @@
-import { memo, VFC } from "react";
+import { Center, Stack, Wrap, WrapItem, } from "@chakra-ui/react";
+import { memo, useCallback, useEffect, VFC } from "react";
+import { UserCard } from "../organism/layout/user/UserCard";
+import { useAllUsers } from "../../hooks/useAllUsers";
+import { Spinner } from "@chakra-ui/spinner";
+import { Modal, ModalBody, ModalCloseButton, ModalContent, ModalHeader, ModalOverlay } from "@chakra-ui/modal";
+import { useDisclosure } from "@chakra-ui/hooks";
+import { FormControl, FormLabel } from "@chakra-ui/form-control";
+import { Input } from "@chakra-ui/input";
+import { UserDetailModal } from "../organism/layout/user/UserDetailModal";
+import { useSelectUser } from '../../hooks/useSelectUser';
+import { useLoginUser } from '../../hooks/useLoginUser';
 
 export const UserManagement: VFC = memo(() => {
-  return <p>ユーザー管理画面ページです</p>;
+  const { isOpen, onOpen, onClose } = useDisclosure();
+  const { getUsers, users, loading } = useAllUsers();
+  const { onSelectUser, selectedUser } = useSelectUser();
+  const { loginUser } = useLoginUser();
+
+  const onClickUser = useCallback(
+    (id: number) => {
+      console.log(id);
+      onSelectUser({id, users, onOpen});
+    },
+    [ users, onSelectUser, onOpen ],
+  )
+
+
+  useEffect(() => getUsers(), [])
+
+  return (
+    <>
+    {loading ? (
+      <Center h="100vh">
+        <Spinner />
+      </Center>) : (
+      <Wrap p={{ base: 4, md: 10 }}>
+        {users?.map((user) => (
+          <WrapItem key={user.id} mx="auto">
+            <UserCard id={user.id} imageUrl="https://source.unsplash.com/random" userName={user.username} fullName={user.name} onClick={onClickUser}/>
+          </WrapItem>
+        ))}
+      </Wrap>
+    )}
+    <UserDetailModal user={selectedUser} isOpen={isOpen} isAdmin={loginUser?.isAdmin} onClose={onClose} />
+    </>
+  )
 });
