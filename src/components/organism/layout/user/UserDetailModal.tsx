@@ -44,11 +44,11 @@ export const UserDetailModal: VFC<Props> = memo((props) => {
           <ModalBody mx={4}>
             <Stack spacing={4}>
               <FormControl>
-                <FormLabel>名前</FormLabel>
+                <FormLabel>Name</FormLabel>
                 <Input value={userName} onChange={onChangeUserName} isReadOnly={!isAdmin} />
               </FormControl>
               <FormControl>
-                <FormLabel>フルネーム</FormLabel>
+                <FormLabel>FullName</FormLabel>
                 <Input value={name} onChange={onChangeName} isReadOnly={!isAdmin} />
               </FormControl>
               <FormControl>
